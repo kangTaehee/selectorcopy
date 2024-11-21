@@ -13,7 +13,6 @@ chrome.commands.onCommand.addListener((command) => {
 	}
 });
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-	debugger
 	if (changeInfo.status === "complete" && tab.url && tab.url.startsWith("http")) {
 		chrome.scripting.executeScript({
 			target: { tabId: tabId },
@@ -21,28 +20,22 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 		});
 	}
 });
-
 // content script에서 실행할 함수 정의
 function copyCssSelector() {
 	console.log("현재 요소의 CSS 선택자를 복사합니다.");
-	// 여기에 CSS 선택자를 복사하는 로직 작성 가능
+	let overitem = null
+	document.addEventListener("mouseover", function (event) {
+		overitem = event.target
+	});
 	(function () {
-		let overitem = null
-		document.addEventListener("mouseover", function (event) {
-			overitem = event.target
-
-		});
-
 		document.addEventListener('keydown', function (event) {
 			// 원하는 단축키 설정 (Ctrl + Alt + C)
 			// if (event.ctrlKey && event.altKey && event.key === 'y') {
 			if (event.ctrlKey && event.key === 'b') {
 				// const element = document.querySelector(':hover'); // 현재 마우스가 올려진 요소
 				const element = overitem;
-
 				function getSelector(element) {
 					let selector = "";
-
 					// ID가 있으면 #id 형태로 반환
 					if (element.id) {
 						selector = `#${element.id}`;
@@ -59,14 +52,11 @@ function copyCssSelector() {
 						// Fallback: 태그 이름 반환
 						selector = element.tagName.toLowerCase();
 					}
-
 					return selector;
 				}
-
 				function getFullSelector(element) {
 					let parts = [];
 					let current = element;
-
 					while (current && current.tagName.toLowerCase() !== "body") {
 						const currentSelector = getSelector(current);
 						if (currentSelector) {
@@ -77,38 +67,29 @@ function copyCssSelector() {
 						}
 						current = current.parentElement;
 					}
-
 					return parts.join(" > ");
 				}
-
 				const fullSelector = getFullSelector(element);
 				console.log("Full selector:", fullSelector);
 				copyTextToClipboard(fullSelector)
 				// test
-				let item = document.querySelectorAll(fullSelector)
-				console.log(item)
-				item.forEach(item => item.style.outline = "2px dashed red")
-				let messege = `복사 갯수 : ${item.length}`
-				console.log(messege);
-				// await alert(messege)
-				setTimeout(() => {
-					alert(messege);
-					// 스타일 제거
-					item.forEach((item) => (item.style.outline = "unset"));
-				}, 100);
-				// (async function () {
-				// 	// alert 메시지 표시 (사용자가 확인 버튼을 누를 때까지 기다림)
-				// 	await new Promise((resolve) => {
-				// 		alert(messege);
-				// 		resolve();
-				// 	});
-				// 	// item.forEach((item) => (item.style.border = "unset"));
-				// })();
-				// test end
+				try {
+					let item = document.querySelectorAll(fullSelector)
 
+					console.log(item)
+					item.forEach(item => item.style.outline = "2px dashed red")
+					let messege = `복사 갯수 : ${item.length}`
+					console.log(messege);
+					setTimeout(() => {
+						alert(messege);
+						// 스타일 제거
+						item.forEach((item) => (item.style.outline = "unset"));
+					}, 100);
+				} catch (error) {
+					alert('마우스로 복사할 대상을 클릭해주세요')
+				}
 			}
 		});
-
 		function copyTextToClipboard(text) {
 			if (text) {
 				// const selector = generateUniqueSelector(text);
@@ -121,9 +102,5 @@ function copyCssSelector() {
 				console.log(text)
 			}
 		}
-
-
-
 	}())
 }
-
