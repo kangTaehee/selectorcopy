@@ -23,52 +23,16 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // content script에서 실행할 함수 정의
 function copyCssSelector() {
 	console.log("현재 요소의 CSS 선택자를 복사합니다.");
-	let overitem = null
+	let overitem = null; // 현재 마우스가 올려진 요소
 	document.addEventListener("mouseover", function (event) {
 		overitem = event.target
 	});
 	(function () {
 		document.addEventListener('keydown', function (event) {
-			// 원하는 단축키 설정 (Ctrl + Alt + C)
-			// if (event.ctrlKey && event.altKey && event.key === 'y') {
+			// 원하는 단축키 설정
 			if (event.ctrlKey && event.key === 'b') {
-				// const element = document.querySelector(':hover'); // 현재 마우스가 올려진 요소
+			// if (event.key === 'b') {
 				const element = overitem;
-				function getSelector(element) {
-					let selector = "";
-					// ID가 있으면 #id 형태로 반환
-					if (element.id) {
-						selector = `#${element.id}`;
-					} else if (element.className) {
-						// 클래스가 있으면 .class1.class2 형태로 반환
-						const classNames = element.className.split(/\s+/).filter(Boolean);
-						if (classNames.length > 0) {
-							selector = `.${classNames.join('.')}`;
-						}
-					} else if (element.name) {
-						// name 속성이 있으면 [name="value"] 형태로 반환
-						selector = `[name="${element.name}"]`;
-					} else {
-						// Fallback: 태그 이름 반환
-						selector = element.tagName.toLowerCase();
-					}
-					return selector;
-				}
-				function getFullSelector(element) {
-					let parts = [];
-					let current = element;
-					while (current && current.tagName.toLowerCase() !== "body") {
-						const currentSelector = getSelector(current);
-						if (currentSelector) {
-							parts.unshift(currentSelector); // 앞에 추가
-							if (current.id) {
-								break; // ID를 만나면 중단
-							}
-						}
-						current = current.parentElement;
-					}
-					return parts.join(" > ");
-				}
 				const fullSelector = getFullSelector(element);
 				console.log("Full selector:", fullSelector);
 				copyTextToClipboard(fullSelector)
@@ -78,7 +42,7 @@ function copyCssSelector() {
 
 					console.log(item)
 					item.forEach(item => item.style.outline = "2px dashed red")
-					let messege = `복사 갯수 : ${item.length}`
+					let messege = `셀렉터 기준 요소 갯수 : ${item.length}`
 					console.log(messege);
 					setTimeout(() => {
 						alert(messege);
@@ -92,7 +56,6 @@ function copyCssSelector() {
 		});
 		function copyTextToClipboard(text) {
 			if (text) {
-				// const selector = generateUniqueSelector(text);
 				navigator.clipboard.writeText(text).then(() => {
 					console.log('CSS Selector 복사됨:', text);
 				}).catch(err => {
@@ -101,6 +64,41 @@ function copyCssSelector() {
 			} else {
 				console.log(text)
 			}
+		}
+		function getSelector(element) {
+			let selector = "";
+			// ID가 있으면 #id 형태로 반환
+			if (element.id) {
+				selector = `#${element.id}`;
+			} else if (element.className) {
+				// 클래스가 있으면 .class1.class2 형태로 반환
+				const classNames = element.className.split(/\s+/).filter(Boolean);
+				if (classNames.length > 0) {
+					selector = `.${classNames.join('.')}`;
+				}
+			} else if (element.name) {
+				// name 속성이 있으면 [name="value"] 형태로 반환
+				selector = `[name="${element.name}"]`;
+			} else {
+				// Fallback: 태그 이름 반환
+				selector = element.tagName.toLowerCase();
+			}
+			return selector;
+		}
+		function getFullSelector(element) {
+			let parts = [];
+			let current = element;
+			while (current && current.tagName.toLowerCase() !== "body") {
+				const currentSelector = getSelector(current);
+				if (currentSelector) {
+					parts.unshift(currentSelector); // 앞에 추가
+					if (current.id) {
+						break; // ID를 만나면 중단
+					}
+				}
+				current = current.parentElement;
+			}
+			return parts.join(" > ");
 		}
 	}())
 }
