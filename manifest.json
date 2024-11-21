@@ -1,0 +1,23 @@
+{
+	"manifest_version": 3,
+	"version": "1.0.0",
+	"name": "CSS Selector Copier",
+	"description": "단축키로 CSS 선택자 복사",
+	"permissions": [
+	  "activeTab",
+	  "scripting",
+	  "clipboardWrite"
+	],
+	"background": {
+	  "service_worker": "service-worker.js"
+	},
+	"commands": {
+	  "copy-css-selector": {
+		"suggested_key": {
+		  "windows": "Ctrl+Shift+Y"
+		},
+		"description": "현재 요소의 CSS 선택자 복사"
+	  }
+	}
+  }
+  
