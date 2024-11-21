@@ -4,20 +4,29 @@
 	"name": "CSS Selector Copier",
 	"description": "단축키로 CSS 선택자 복사",
 	"permissions": [
-	  "activeTab",
-	  "scripting",
-	  "clipboardWrite"
+		"activeTab",
+		"scripting",
+		"clipboardWrite"
 	],
+	"icons": {
+		"16": "icons/icon16.png",
+		"32": "icons/icon32.png",
+		"48": "icons/icon48.png",
+		"64": "icons/icon64.png",
+		"128": "icons/icon128.png"
+	},
 	"background": {
-	  "service_worker": "service-worker.js"
+		"service_worker": "service-worker.js"
 	},
 	"commands": {
-	  "copy-css-selector": {
-		"suggested_key": {
-		  "windows": "Ctrl+Shift+Y"
-		},
-		"description": "현재 요소의 CSS 선택자 복사"
-	  }
+		"copy-css-selector": {
+			"suggested_key": {
+				"windows": "Ctrl+Shift+Y"
+			},
+			"description": "현재 요소의 CSS 선택자 복사"
+		}
+	},
+	"action": {
+	  "default_popup": "popup/popup.html"
 	}
-  }
-  
+}

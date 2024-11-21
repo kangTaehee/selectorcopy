@@ -127,5 +127,4 @@ function copyCssSelector() {
 	}
 	document.addEventListener('keydown', handleKeyDown);
 	document.addEventListener("mouseover", handleMouseOver);
-
 }
